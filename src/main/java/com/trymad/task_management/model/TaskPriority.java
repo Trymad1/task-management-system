@@ -12,13 +12,12 @@ import lombok.Setter;
 @Setter
 
 @Entity
-@Table(name = "statuses")
-public class Status {
-    
+@Table(name = "priorities")
+public class TaskPriority {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String value;
-
 }

@@ -34,3 +34,4 @@ build/
 .env
 docker-compose-dev.yml
 src/main/resources/application-dev.yml
+data.sql
