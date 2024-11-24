@@ -1,11 +1,13 @@
 package com.trymad.task_management.web.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trymad.task_management.service.UserService;
@@ -26,18 +28,21 @@ public class UserController {
     private final UserMapper userMapper;
 
     @GetMapping("{id}")
+    @ResponseStatus(value = HttpStatus.OK)
     public UserDTO getById(@PathVariable Long id) {
-        return null;
+        return userMapper.toDto(userService.get(id));
     }
 
     @PostMapping
+    @ResponseStatus(value = HttpStatus.CREATED)
     public UserDTO create(@RequestBody UserCreateDTO userCreateDTO) {
-        return null;
+        return userMapper.toDto(userService.create(userCreateDTO));
     }
 
     @PutMapping("{id}")
-    public UserDTO update(@PathVariable Long id, 
-                          @RequestBody UserUpdateDTO userUpdateDTO) {
-        return null;
+    @ResponseStatus(value = HttpStatus.OK)
+    public UserDTO update(@PathVariable Long id,
+            @RequestBody UserUpdateDTO userUpdateDTO) {
+        return userMapper.toDto(userService.update(userUpdateDTO, id));
     }
 }
