@@ -2,6 +2,7 @@ package com.trymad.task_management.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -23,9 +24,10 @@ import com.trymad.task_management.model.User;
 import com.trymad.task_management.repository.UserRepository;
 import com.trymad.task_management.service.UserService;
 import com.trymad.task_management.web.dto.user.UserCreateDTO;
-import com.trymad.task_management.web.dto.user.UserDTO;
 import com.trymad.task_management.web.dto.user.UserMapper;
 import com.trymad.task_management.web.dto.user.UserUpdateDTO;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -45,8 +47,6 @@ public class UserServiceTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
-
         user = new User();
         user.setId(1L);
         user.setName("Oleg");
@@ -54,20 +54,30 @@ public class UserServiceTest {
         user.setPassword("password");
 
         userCreateDTO = new UserCreateDTO("Oleg", "Oleg@gmail.com", "password");
-        userDTO = new UserDTO(1L, "Oleg", "Oleg@gmail.com");
         userUpdateDTO = new UserUpdateDTO("Oleg Updated", "Oleg@gmail.com", "newPassword");
     }
 
     @Test
     public void givenUserIdShouldReturnUser() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        final Long userId = 1L;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        User result = userService.get(1L);
+        User result = userService.get(userId);
 
         assertNotNull(result);
-        assertEquals(1L, result.getId());
+        assertEquals(userId, result.getId());
         assertEquals("Oleg", result.getName());
         assertEquals("Oleg@gmail.com", result.getMail());
+        verify(userRepository, times(1)).findById(userId);
+    }
+
+    @Test
+    public void givenUserIdShouldThrowException() {
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(null));
+
+        assertThrows(EntityNotFoundException.class, () -> {
+            userService.get(1L);
+        });
         verify(userRepository, times(1)).findById(1L);
     }
 
@@ -90,7 +100,8 @@ public class UserServiceTest {
     @Test
     public void givenUserUpdateDtoShouldUpdateAndReturnUpdatedUser() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(userMapper.toEntity(userUpdateDTO)).thenReturn(user);
+        when(userRepository.save(user)).thenReturn(user);
+
         final Long userId = 1L;
         final LocalDateTime now = LocalDateTime.now();
         user.setCreated_at(now);
@@ -102,7 +113,18 @@ public class UserServiceTest {
         assertEquals("Oleg Updated", result.getName());
         assertEquals("Oleg@gmail.com", result.getMail());
         assertTrue(user.getUpdated_at().isAfter(now));
-        verify(userRepository, times(1)).findById(userId);
+
+        verify(userRepository, times(1)).findById(1L);
         verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    public void givenUserUpdateDtoShouldThrowNotFound() {
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(null));
+
+        assertThrows(EntityNotFoundException.class, () -> {
+            userService.update(userUpdateDTO, 1L);
+        });
+        verify(userRepository, times(1)).findById(1L);
     }
 }
