@@ -3,7 +3,6 @@ package com.trymad.task_management.model;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,11 +23,11 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "executor_id")
     private User executor;
 
@@ -38,14 +37,14 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "status_id")
-    private Status status;
+    private TaskStatus status;
 
     @ManyToOne
     @JoinColumn(name = "priority_id")
-    private Priority priority;
+    private TaskPriority priority;
 
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
-    private LocalDateTime changed_at;
+    private LocalDateTime changedAt;
 
 }
