@@ -1,7 +1,6 @@
 package com.trymad.task_management.services;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.trymad.task_management.model.Task;
 import com.trymad.task_management.model.TaskPriority;
 import com.trymad.task_management.model.TaskStatus;
-import com.trymad.task_management.model.User;
 import com.trymad.task_management.repository.PriorityRepository;
 import com.trymad.task_management.repository.StatusRepository;
 import com.trymad.task_management.repository.TaskRepository;
