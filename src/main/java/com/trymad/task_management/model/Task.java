@@ -39,7 +39,7 @@ public class Task {
     private Status status;
 
     @ManyToOne
-    @JoinColumn(name = "priority_id")git 
+    @JoinColumn(name = "priority_id")
     private Priority priority;
 
     private LocalDateTime created_at;
