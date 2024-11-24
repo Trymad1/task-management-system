@@ -11,13 +11,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
-
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -40,8 +39,8 @@ public class User {
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Task> taskAsAuthor = new ArrayList<>();
 
-    @OneToMany(mappedBy = "executor", fetch = FetchType.LAZY, 
-               cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+    @OneToMany(mappedBy="executor",fetch=FetchType.LAZY, cascade=
+    { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
     private List<Task> taskAsExecutor = new ArrayList<>();
 
 }
