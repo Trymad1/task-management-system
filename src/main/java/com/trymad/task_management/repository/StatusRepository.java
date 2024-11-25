@@ -5,9 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.trymad.task_management.model.TaskStatus;
+import com.trymad.task_management.model.TaskStatusEntity;
 
-public interface StatusRepository extends JpaRepository<TaskStatus, Long> {
+public interface StatusRepository extends JpaRepository<TaskStatusEntity, Long> {
     
-    Optional<TaskStatus> findByValue(String value);
+    Optional<TaskStatusEntity> findByValue(TaskStatus status);
 
 }

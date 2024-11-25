@@ -37,14 +37,14 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "status_id")
-    private TaskStatus status;
+    private TaskStatusEntity status;
 
     @ManyToOne
     @JoinColumn(name = "priority_id")
-    private TaskPriority priority;
+    private TaskPriorityEntity priority;
 
     private LocalDateTime createdAt;
 
-    private LocalDateTime changedAt;
+    private LocalDateTime updatedAt;
 
 }

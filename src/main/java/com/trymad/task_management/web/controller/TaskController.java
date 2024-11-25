@@ -1,5 +1,9 @@
 package com.trymad.task_management.web.controller;
 
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +19,7 @@ import com.trymad.task_management.service.TaskService;
 import com.trymad.task_management.web.dto.task.TaskCreateDTO;
 import com.trymad.task_management.web.dto.task.TaskDTO;
 import com.trymad.task_management.web.dto.task.TaskMapper;
+import com.trymad.task_management.web.dto.task.TaskParams;
 import com.trymad.task_management.web.dto.task.TaskUpdateDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +32,12 @@ public class TaskController {
 
     private final TaskService taskService;
     private final TaskMapper taskMapper;
+
+    @GetMapping
+    public List<TaskDTO> findByFilters(TaskParams taskParams,
+            @PageableDefault(page = 0, size = 10, sort = "createdAt") Pageable pageable) {
+        return taskMapper.toDto(taskService.get(taskParams, pageable));
+    }
 
     @GetMapping("{id}")
     @ResponseStatus(value = HttpStatus.OK)

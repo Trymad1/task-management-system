@@ -5,8 +5,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.trymad.task_management.model.TaskPriority;
+import com.trymad.task_management.model.TaskPriorityEntity;
 
-public interface PriorityRepository extends JpaRepository<TaskPriority, Long> {
+public interface PriorityRepository extends JpaRepository<TaskPriorityEntity, Long> {
     
-    Optional<TaskPriority> findByValue(String name);
+    Optional<TaskPriorityEntity> findByValue(TaskPriority priority);
 }
