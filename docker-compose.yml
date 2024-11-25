@@ -1,0 +1,33 @@
+version: '2.2'
+
+services:
+  database:
+    image: postgres:17
+    container_name: app_db
+    environment:
+      POSTGRES_DB: task_management_db
+      POSTGRES_USER: ${DB_USER:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-admin}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data 
+
+  app:
+    build:
+      context: .  
+    image: app:latest 
+    environment:
+      DATASOURCE_URL: jdbc:postgresql://database:${DB_PORT:-5432}/task_management_db
+      DATASOURCE_USERNAME: ${DB_USER:-admin}
+      DATASOURCE_PASSWORD: ${DB_PASSWORD:-admin}
+      APP_PORT: ${APP_PORT:-8080}
+      APP_PROFILE: ${APP_PROFILE:-prod}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      - database
+    restart: always  
+
+volumes:
+  db-data:
