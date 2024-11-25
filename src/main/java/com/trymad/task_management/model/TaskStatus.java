@@ -1,24 +1,27 @@
 package com.trymad.task_management.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+public enum TaskStatus {
+    NEW("NEW"),
+    IN_PROGRESS("IN_PROGRESS"),
+    PAUSED("PAUSED"),
+    CANCELED("CANCELED"),
+    COMPLETED("COMPLETED");
 
-@Getter
-@Setter
+    private final String value;
 
-@Entity
-@Table(name = "statuses")
-public class TaskStatus {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    TaskStatus(String value) {
+        this.value = value;
+    }
 
-    private String value;
+    public String getValue() {
+        return this.value;
+    }
 
+    public static TaskStatus fromString(String status) {
+        try {
+            return TaskStatus.valueOf(status.toUpperCase().trim());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Unknown status: " + status, e);
+        }
+    }
 }

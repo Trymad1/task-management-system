@@ -5,9 +5,11 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.trymad.task_management.model.TaskStatus;
+import com.trymad.task_management.model.TaskStatusEntity;
 import com.trymad.task_management.model.Task;
 import com.trymad.task_management.model.TaskPriority;
+import com.trymad.task_management.model.TaskPriorityEntity;
+import com.trymad.task_management.model.TaskStatus;
 import com.trymad.task_management.repository.PriorityRepository;
 import com.trymad.task_management.repository.StatusRepository;
 import com.trymad.task_management.repository.TaskRepository;
@@ -37,15 +39,15 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
-    private TaskStatus getStatus(String name) {
-        return statusRepository.findByValue(name).orElseThrow(
-                () -> new EntityNotFoundException("Status " + name + " is not valid"));
+    private TaskStatusEntity getStatus(TaskStatus status) {
+        return statusRepository.findByValue(status).orElseThrow(
+                () -> new EntityNotFoundException("Status " + status + " is not valid"));
     }
 
     @Transactional(readOnly = true)
-    private TaskPriority getPriority(String name) {
-        return priorityRepository.findByValue(name).orElseThrow(
-                () -> new EntityNotFoundException("Priority " + name + " is not valid"));
+    private TaskPriorityEntity getPriority(TaskPriority priority) {
+        return priorityRepository.findByValue(priority).orElseThrow(
+                () -> new EntityNotFoundException("Priority " + priority + " is not valid"));
     }
 
     public Task create(TaskCreateDTO createDto) {
@@ -57,10 +59,10 @@ public class TaskService {
             task.setExecutor(userService.get(createDto.executorId()));
         }
 
-        task.setStatus(this.getStatus(createDto.status()));
-        task.setPriority(this.getPriority(createDto.priority()));
+        task.setStatus(this.getStatus(TaskStatus.fromString(createDto.status())));
+        task.setPriority(this.getPriority(TaskPriority.fromString(createDto.priority())));
         task.setCreatedAt(now);
-        task.setChangedAt(now);
+        task.setUpdatedAt(now);
 
         return taskRepository.save(task);
     }
@@ -76,14 +78,14 @@ public class TaskService {
         }
 
         if (updateDto.getStatus() != null) {
-            task.setStatus(this.getStatus(updateDto.getStatus()));
+            task.setStatus(this.getStatus(TaskStatus.fromString(updateDto.getStatus())));
         }
 
         if (updateDto.getPriority() != null) {
-            task.setPriority(this.getPriority(updateDto.getPriority()));
+            task.setPriority(this.getPriority(TaskPriority.fromString(updateDto.getPriority())));
         }
 
-        task.setChangedAt(LocalDateTime.now());
+        task.setUpdatedAt(LocalDateTime.now());
         return taskRepository.save(task);
     }
 

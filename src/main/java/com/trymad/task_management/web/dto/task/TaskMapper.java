@@ -15,6 +15,8 @@ public interface TaskMapper {
     @Mapping(target = "priority", source = "priority.value")
     @Mapping(target = "authorId", source = "author.id")
     @Mapping(target = "executorId", source = "executor.id")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedAt", source = "updatedAt")
     TaskDTO toDto(Task task);
 
     @Mapping(target = "status", ignore = true)

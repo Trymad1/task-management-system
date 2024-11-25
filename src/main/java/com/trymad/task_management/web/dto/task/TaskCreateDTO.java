@@ -7,5 +7,4 @@ public record TaskCreateDTO(
         String description,
         String status,
         String priority) {
-
 }
