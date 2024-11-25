@@ -54,8 +54,8 @@ public class TaskController {
 
     @GetMapping("{id}/comments")
     @ResponseStatus(value = HttpStatus.OK)
-    public List<CommentDTO> getCommentsForTask(@PathVariable Long id) {
-        return commentMapper.toDto(commentService.getByTaskId(id));
+    public List<CommentDTO> getCommentsForTask(@PathVariable Long id, Pageable pageable) {
+        return commentMapper.toDto(commentService.getByTaskId(id, pageable));
     }
 
     @PostMapping("{id}/comments")

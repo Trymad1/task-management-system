@@ -1,8 +1,10 @@
 package com.trymad.task_management.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
 import com.trymad.task_management.model.Comment;
@@ -22,9 +24,11 @@ public class CommentService {
     private final UserService userService;
     private final CommentMapper commentMapper;
 
-    public List<Comment> getByTaskId(Long id) {
+    public Slice<Comment> getByTaskId(Long id, 
+    @PageableDefault(page = 0, size = 20, sort = "createdAt") Pageable pageable) {
         taskService.existOrThrow(id);
-        return commentRepository.findAllByTaskId(id);
+        final Slice<Comment> slice = commentRepository.findAllByTaskId(id, pageable);
+        return slice;
     }
 
     public Comment addComment(CommentCreateDTO createDto, Long taskId) {
