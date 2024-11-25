@@ -15,7 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trymad.task_management.service.CommentService;
 import com.trymad.task_management.service.TaskService;
+import com.trymad.task_management.web.dto.comment.CommentCreateDTO;
+import com.trymad.task_management.web.dto.comment.CommentDTO;
+import com.trymad.task_management.web.dto.comment.CommentMapper;
 import com.trymad.task_management.web.dto.task.TaskCreateDTO;
 import com.trymad.task_management.web.dto.task.TaskDTO;
 import com.trymad.task_management.web.dto.task.TaskMapper;
@@ -32,8 +36,11 @@ public class TaskController {
 
     private final TaskService taskService;
     private final TaskMapper taskMapper;
+    private final CommentMapper commentMapper;
+    private final CommentService commentService;
 
     @GetMapping
+    @ResponseStatus(value = HttpStatus.OK)
     public List<TaskDTO> findByFilters(TaskParams taskParams,
             @PageableDefault(page = 0, size = 10, sort = "createdAt") Pageable pageable) {
         return taskMapper.toDto(taskService.get(taskParams, pageable));
@@ -43,6 +50,18 @@ public class TaskController {
     @ResponseStatus(value = HttpStatus.OK)
     public TaskDTO getById(@PathVariable Long id) {
         return taskMapper.toDto(taskService.get(id));
+    }
+
+    @GetMapping("{id}/comments")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<CommentDTO> getCommentsForTask(@PathVariable Long id) {
+        return commentMapper.toDto(commentService.getByTaskId(id));
+    }
+
+    @PostMapping("{id}/comments")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public CommentDTO addCommentsToTask(@RequestBody CommentCreateDTO commentCreateDTO, @PathVariable Long id) {
+        return commentMapper.toDto(commentService.addComment(commentCreateDTO, id));
     }
 
     @PostMapping
@@ -62,5 +81,4 @@ public class TaskController {
     public void delete(@PathVariable Long id) {
         taskService.delete(id);
     }
-
 }

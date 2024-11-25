@@ -3,6 +3,7 @@ package com.trymad.task_management.model;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,12 +28,12 @@ public class Comment {
     @JoinColumn(name = "author_id")
     private User author;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id")
     private Task task;
 
     private String text;
 
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
 }

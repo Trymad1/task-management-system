@@ -36,18 +36,18 @@ public class TaskService {
     private final TaskSpecificationBuilder specificationBuilder;
 
     private final String NOT_FOUND_ID = "{0} with id {1} not found";
-    
+
     public Slice<Task> get(TaskParams params, Pageable pageable) {
-        
+
         final TaskStatus status = params.status() == null ? null : TaskStatus.fromString(params.status());
         final TaskPriority priority = params.priority() == null ? null : TaskPriority.fromString(params.priority());
 
         final Specification<Task> specification = specificationBuilder
-            .authorId(params.authorId())
-            .executorId(params.executorId())
-            .status(status)
-            .priority(priority)
-            .build();
+                .authorId(params.authorId())
+                .executorId(params.executorId())
+                .status(status)
+                .priority(priority)
+                .build();
 
         final Slice<Task> tasks = taskRepository.findAll(specification, pageable);
         return tasks;
@@ -57,6 +57,18 @@ public class TaskService {
     public Task get(Long id) {
         return taskRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(MessageFormat.format(NOT_FOUND_ID, "Task", id)));
+    }
+
+    public void existOrThrow(Long id) {
+        if (taskRepository.existsById(id))
+            return;
+        throw new EntityNotFoundException(MessageFormat.format(NOT_FOUND_ID, "Task", id));
+    }
+
+    public Task getExistsReference(Long id) {
+        if (taskRepository.existsById(id))
+            return taskRepository.getReferenceById(id);
+        throw new EntityNotFoundException(MessageFormat.format(NOT_FOUND_ID, "Task", id));
     }
 
     public Task create(TaskCreateDTO createDto) {

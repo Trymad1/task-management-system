@@ -1,5 +1,6 @@
 package com.trymad.task_management.service;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
@@ -23,10 +24,18 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+        private final String NOT_FOUND_ID = "{0} with id {1} not found";
+
     @Transactional(readOnly = true)
     public User get(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("User with id " + id + " not found"));
+                () -> new EntityNotFoundException(MessageFormat.format(NOT_FOUND_ID, "User", id)));
+    }
+
+    public User getExistsReference(Long id) {
+        if (userRepository.existsById(id))
+            return userRepository.getReferenceById(id);
+        throw new EntityNotFoundException(MessageFormat.format(NOT_FOUND_ID, "User", id));
     }
 
     public User create(UserCreateDTO userCreateDTO) {
