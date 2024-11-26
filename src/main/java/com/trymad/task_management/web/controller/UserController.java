@@ -1,5 +1,7 @@
 package com.trymad.task_management.web.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +26,11 @@ public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
+
+    @GetMapping
+    public List<UserDTO> getAll() {
+        return userMapper.toDto(userService.getAll());
+    }
 
     @GetMapping("{id}")
     @ResponseStatus(value = HttpStatus.OK)

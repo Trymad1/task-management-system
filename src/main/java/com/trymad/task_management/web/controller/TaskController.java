@@ -1,5 +1,6 @@
 package com.trymad.task_management.web.controller;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -60,7 +61,7 @@ public class TaskController {
 
     @PostMapping("{id}/comments")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public CommentDTO addCommentsToTask(@RequestBody CommentCreateDTO commentCreateDTO, @PathVariable Long id) {
+    public CommentDTO addCommentsToTask(@RequestBody CommentCreateDTO commentCreateDTO, @PathVariable Long id) throws AccessDeniedException {
         return commentMapper.toDto(commentService.addComment(commentCreateDTO, id));
     }
 
@@ -72,7 +73,7 @@ public class TaskController {
 
     @PatchMapping("{id}")
     @ResponseStatus(value = HttpStatus.OK)
-    public TaskDTO update(@RequestBody TaskUpdateDTO updateDTO, @PathVariable Long id) {
+    public TaskDTO update(@RequestBody TaskUpdateDTO updateDTO, @PathVariable Long id) throws AccessDeniedException {
         return taskMapper.toDto(taskService.update(updateDTO, id));
     }
 

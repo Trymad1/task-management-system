@@ -2,11 +2,16 @@ package com.trymad.task_management.service;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,6 +44,10 @@ public class UserService implements UserDetailsService {
 
     private final String NOT_FOUND_ID = "{0} with id {1} not found";
     private final String NOT_FOUND_MAIL = "{0} with mail {1} not found";
+
+    public List<User> getAll() {
+        return userRepository.findAll();
+    }
 
     @Transactional(readOnly = true)
     public User get(Long id) {
@@ -102,10 +111,20 @@ public class UserService implements UserDetailsService {
 
     private UserDetails createUserDetails(
             String mail, String password, Set<Role> roles) {
-        return new org.springframework.security.core.userdetails.User(
-                mail,
-                password,
-                roles.stream().map(role -> new SimpleGrantedAuthority(role.toString()))
-                        .collect(Collectors.toList()));
+        final Set<GrantedAuthority> authorities = roles.stream().map(role -> new SimpleGrantedAuthority(role.toString())).collect(Collectors.toSet());
+        return createUserDetails(mail, password, authorities);
+    }
+
+    private UserDetails createUserDetails(String mail, String password, Collection<? extends GrantedAuthority> authority) {
+        return new org.springframework.security.core.userdetails.User(mail ,password, authority); 
+    }
+
+    public UserDetails getCurrentUser() {
+        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return createUserDetails((String) auth.getPrincipal(), "null", auth.getAuthorities());
+    }
+
+    public Set<Role> mapToRoles(Collection<? extends GrantedAuthority> roles) {
+        return roles.stream().map(authority -> Role.valueOf(authority.getAuthority())).collect(Collectors.toSet());
     }
 }

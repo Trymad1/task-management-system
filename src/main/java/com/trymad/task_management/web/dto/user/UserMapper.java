@@ -1,5 +1,6 @@
 package com.trymad.task_management.web.dto.user;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,8 @@ import com.trymad.task_management.model.User;
 public interface UserMapper {
 
     UserDTO toDto(User user);
+
+    List<UserDTO> toDto(List<User> user);
 
     User toEntity(UserDTO userDTO);
 

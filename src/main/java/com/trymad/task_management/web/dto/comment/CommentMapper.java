@@ -13,6 +13,7 @@ import com.trymad.task_management.model.Comment;
 public interface CommentMapper {
 
     @Mapping(target = "authorId", source = "author.id")
+    @Mapping(target = "authorName", source = "author.name")
     CommentDTO toDto(Comment comment);
 
     List<CommentDTO> toDto(Slice<Comment> comments);
