@@ -1,5 +1,6 @@
 package com.trymad.task_management.web.controller;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -41,7 +42,7 @@ public class UserController {
     @PutMapping("{id}")
     @ResponseStatus(value = HttpStatus.OK)
     public UserDTO update(@PathVariable Long id,
-            @RequestBody UserUpdateDTO userUpdateDTO) {
+            @RequestBody UserUpdateDTO userUpdateDTO) throws AccessDeniedException {
         return userMapper.toDto(userService.update(userUpdateDTO, id));
     }
 }

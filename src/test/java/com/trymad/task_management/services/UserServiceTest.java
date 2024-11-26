@@ -9,6 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -98,7 +99,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void givenUserUpdateDtoShouldUpdateAndReturnUpdatedUser() {
+    public void givenUserUpdateDtoShouldUpdateAndReturnUpdatedUser() throws AccessDeniedException {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(user)).thenReturn(user);
 

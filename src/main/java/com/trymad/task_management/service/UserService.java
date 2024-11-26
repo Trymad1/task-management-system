@@ -1,5 +1,6 @@
 package com.trymad.task_management.service;
 
+import java.nio.file.AccessDeniedException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -82,8 +83,11 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public User update(UserUpdateDTO userUpdateDTO, Long id) {
+    public User update(UserUpdateDTO userUpdateDTO, Long id) throws AccessDeniedException {
         final User user = this.get(id);
+        if(!this.getCurrentUser().getUsername().equals(user.getMail())) {
+            throw new AccessDeniedException("You can`t change another users");
+        }
 
         user.setPassword(userUpdateDTO.password());
         user.setMail(userUpdateDTO.mail());

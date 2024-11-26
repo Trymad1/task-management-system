@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -61,10 +62,12 @@ public class TaskController {
 
     @PostMapping("{id}/comments")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public CommentDTO addCommentsToTask(@RequestBody CommentCreateDTO commentCreateDTO, @PathVariable Long id) throws AccessDeniedException {
+    public CommentDTO addCommentsToTask(@RequestBody CommentCreateDTO commentCreateDTO, @PathVariable Long id)
+            throws AccessDeniedException {
         return commentMapper.toDto(commentService.addComment(commentCreateDTO, id));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
     public TaskDTO create(@RequestBody TaskCreateDTO createDTO) {
@@ -77,6 +80,7 @@ public class TaskController {
         return taskMapper.toDto(taskService.update(updateDTO, id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("{id}")
     @ResponseStatus(value = HttpStatus.OK)
     public void delete(@PathVariable Long id) {
