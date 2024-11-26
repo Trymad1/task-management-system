@@ -20,6 +20,8 @@ public interface TaskMapper {
     @Mapping(target = "executorId", source = "executor.id")
     @Mapping(target = "createdAt", source = "createdAt")
     @Mapping(target = "updatedAt", source = "updatedAt")
+    @Mapping(target = "executorName", source = "executor.name")
+    @Mapping(target = "authorName", source = "author.name")
     TaskDTO toDto(Task task);
 
     List<TaskDTO> toDto(Slice<Task> taskDtos);
