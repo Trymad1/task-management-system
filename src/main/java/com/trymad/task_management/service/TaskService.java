@@ -79,7 +79,7 @@ public class TaskService {
         final Task task = taskMapper.toEntity(createDto);
         final LocalDateTime now = LocalDateTime.now();
 
-        task.setAuthor(userService.get(createDto.authorId()));
+        task.setAuthor(userService.get(userService.getCurrentUser().getUsername()));
         if (createDto.executorId() != null) {
             task.setExecutor(userService.get(createDto.executorId()));
         }

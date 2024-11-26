@@ -45,7 +45,8 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .claims(claims)
                 .subject(userDetails.getUsername())
-                .issuedAt(expiredDate)
+                .issuedAt(now)
+                .expiration(expiredDate)
                 .signWith(secret)
                 .compact();
     }
@@ -59,7 +60,8 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .claims(claims)
                 .subject(subject)
-                .issuedAt(expiredDate)
+                .issuedAt(now)
+                .expiration(expiredDate)
                 .signWith(secret)
                 .compact();
     }

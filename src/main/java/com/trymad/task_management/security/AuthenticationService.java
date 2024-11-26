@@ -35,9 +35,10 @@ public class AuthenticationService {
         return jwtTokenProvider.generateToken(userDetails);
     }
 
-
-    // this method valid token by method getMail and getRoles, and set auth in context.
+    // this method valid token by method getMail and getRoles, and set auth in
+    // context.
     public Authentication authenticate(String token) {
+        // System.out.println(jwtTokenProvider.isExpired(token));
         final Authentication authentication = new UsernamePasswordAuthenticationToken(
                 jwtTokenProvider.getMail(token),
                 null,
