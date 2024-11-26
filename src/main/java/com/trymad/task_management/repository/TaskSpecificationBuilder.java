@@ -32,20 +32,20 @@ public class TaskSpecificationBuilder {
     public TaskSpecificationBuilder status(TaskStatus status) {
         this.statusSpec = status == null ? null
                 : Specification.where(
-                        (root, query, builder) -> builder.equal(root.get("status").get("value"), status));
+                        (root, query, builder) -> builder.equal(root.get("status").get("name"), status));
         return this;
     }
 
     public TaskSpecificationBuilder priority(TaskPriority priority) {
         this.prioritySpec = priority == null ? null
                 : Specification.where(
-                        (root, query, builder) -> builder.equal(root.get("priority").get("value"), priority));
+                        (root, query, builder) -> builder.equal(root.get("priority").get("name"), priority));
         return this;
     }
 
     public Specification<Task> build() {
         final Specification<Task> spec = Specification.allOf(
-            authorIdSpec, executorIdSpec, statusSpec, prioritySpec);
+                authorIdSpec, executorIdSpec, statusSpec, prioritySpec);
 
         this.clearFields();
         return spec;

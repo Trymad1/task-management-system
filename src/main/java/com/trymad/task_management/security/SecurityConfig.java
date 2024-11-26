@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,8 +23,6 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @EnableGlobalAuthentication
 public class SecurityConfig {
-    
-    private final UserDetailsService userDetails;
 
     @Bean
     PasswordEncoder getPasswordEncoder() {
@@ -36,15 +35,21 @@ public class SecurityConfig {
     }
 
     @Bean
-    AuthenticationProvider getAuthenticationProvider(PasswordEncoder passwordEncoder) {
+    AuthenticationProvider getAuthenticationProvider(
+            PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
         DaoAuthenticationProvider authManager = new DaoAuthenticationProvider();
         authManager.setPasswordEncoder(passwordEncoder);
-        authManager.setUserDetailsService(userDetails);
+        authManager.setUserDetailsService(userDetailsService);
         return authManager;
     }
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.build();
+        return http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests((httpRequest -> {
+                    httpRequest.anyRequest().permitAll();
+                })).sessionManagement(sessionManagement -> {
+                    sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                }).build();
     }
 }

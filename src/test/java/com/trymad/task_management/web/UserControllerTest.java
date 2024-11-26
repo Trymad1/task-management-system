@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trymad.task_management.model.Role;
 import com.trymad.task_management.model.User;
 import com.trymad.task_management.service.UserService;
 import com.trymad.task_management.web.controller.UserController;
@@ -70,7 +71,7 @@ public class UserControllerTest {
 
     @Test
     void givenValidUserCreateDTOWhenCreateUserThenReturnUserDTO() throws Exception {
-        when(userService.create(userCreateDTO)).thenReturn(user);
+        when(userService.create(userCreateDTO, Role.USER)).thenReturn(user);
         when(userMapper.toDto(user)).thenReturn(userDTO);
 
         mockMvc.perform(post("/users")

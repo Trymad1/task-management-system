@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.trymad.task_management.model.Role;
 import com.trymad.task_management.model.User;
 import com.trymad.task_management.repository.UserRepository;
 import com.trymad.task_management.service.UserService;
@@ -85,7 +86,7 @@ public class UserServiceTest {
         when(userMapper.toEntity(userCreateDTO)).thenReturn(user);
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        User result = userService.create(userCreateDTO);
+        User result = userService.create(userCreateDTO, Role.USER);
 
         assertNotNull(result);
         assertEquals("Oleg", result.getName());
