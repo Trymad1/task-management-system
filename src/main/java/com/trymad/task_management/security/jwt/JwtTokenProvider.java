@@ -79,12 +79,12 @@ public class JwtTokenProvider {
     }
 
     public Date getExpirationDate(String token) {
-        return this.getClaims(token).getIssuedAt();
+        return this.getClaims(token).getExpiration();
     }
 
     private Claims getClaims(String token) {
         return Jwts.parser()
-                .decryptWith(secret)
+                .verifyWith(secret)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

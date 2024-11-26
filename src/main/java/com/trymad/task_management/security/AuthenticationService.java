@@ -1,7 +1,12 @@
 package com.trymad.task_management.security;
 
+import java.util.stream.Collectors;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +33,19 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(loginDTO.mail(), loginDTO.password())).getPrincipal();
 
         return jwtTokenProvider.generateToken(userDetails);
+    }
+
+
+    // this method valid token by method getMail and getRoles, and set auth in context.
+    public Authentication authenticate(String token) {
+        final Authentication authentication = new UsernamePasswordAuthenticationToken(
+                jwtTokenProvider.getMail(token),
+                null,
+                jwtTokenProvider.getRoles(token).stream().map(role -> new SimpleGrantedAuthority(role.name()))
+                        .collect(Collectors.toSet()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
     }
 
     public String registryUser(UserCreateDTO userCreateDTO) {

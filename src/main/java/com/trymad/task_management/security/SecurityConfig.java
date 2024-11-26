@@ -2,6 +2,7 @@ package com.trymad.task_management.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -14,6 +15,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.trymad.task_management.web.filter.JwtRequestFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,12 +49,21 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.csrf(csrf -> csrf.disable())
+    SecurityFilterChain filterChain(HttpSecurity http, JwtRequestFilter requestFilter) throws Exception {
+        return http
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.disable())
                 .authorizeHttpRequests((httpRequest -> {
-                    httpRequest.anyRequest().permitAll();
-                })).sessionManagement(sessionManagement -> {
+                    httpRequest.requestMatchers("/auth/**").permitAll()
+                            .anyRequest().authenticated();
+                }))
+                .sessionManagement(sessionManagement -> {
                     sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                }).build();
+                })
+                .exceptionHandling(exception -> {
+                    exception.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+                })
+                .addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 }
