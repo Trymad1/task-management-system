@@ -108,6 +108,13 @@ public class UserService implements UserDetailsService {
         return toUserDetails(user);
     }
 
+    public User grantAdminRole(Long userId) {
+        final User user = this.get(userId);
+        user.getRoles().add(roleService.get(Role.ADMIN));
+        
+        return user;
+    }
+
     public UserDetails toUserDetails(User user) {
         final Set<Role> roles = user.getRoles().stream().map(RoleEntity::getName).collect(Collectors.toSet());
         return createUserDetails(user.getMail(), user.getPassword(), roles);
