@@ -22,7 +22,7 @@ public class TaskPriorityService {
 
     @Transactional(readOnly = true)
     public TaskPriorityEntity get(TaskPriority priority) {
-        return priorityRepository.findByValue(priority).orElseThrow(
+        return priorityRepository.findByName(priority).orElseThrow(
                 () -> new EntityNotFoundException(MessageFormat.format(NOT_VALID_VALUE, "Priority", priority)));
     }
 }

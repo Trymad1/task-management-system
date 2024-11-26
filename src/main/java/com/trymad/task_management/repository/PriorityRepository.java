@@ -9,5 +9,5 @@ import com.trymad.task_management.model.TaskPriorityEntity;
 
 public interface PriorityRepository extends JpaRepository<TaskPriorityEntity, Long> {
     
-    Optional<TaskPriorityEntity> findByValue(TaskPriority priority);
+    Optional<TaskPriorityEntity> findByName(TaskPriority priority);
 }

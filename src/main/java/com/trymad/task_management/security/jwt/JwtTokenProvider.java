@@ -21,9 +21,6 @@ import com.trymad.task_management.model.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 
 @Component
 public class JwtTokenProvider {
