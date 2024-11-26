@@ -1,14 +1,18 @@
 package com.trymad.task_management.service;
 
+import java.nio.file.AccessDeniedException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.trymad.task_management.model.Role;
 import com.trymad.task_management.model.Task;
 import com.trymad.task_management.model.TaskPriority;
 import com.trymad.task_management.model.TaskStatus;
@@ -88,8 +92,10 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task update(TaskUpdateDTO updateDto, Long id) {
+    public Task update(TaskUpdateDTO updateDto, Long id) throws AccessDeniedException {
         final Task task = this.get(id);
+        checkPermissions(task, updateDto);
+
         taskMapper.updateFromDto(updateDto, task);
 
         if (updateDto.getExecutorId() == null) {
@@ -108,6 +114,21 @@ public class TaskService {
 
         task.setUpdatedAt(LocalDateTime.now());
         return taskRepository.save(task);
+    }
+
+    private void checkPermissions(Task task, TaskUpdateDTO updateDto) throws AccessDeniedException {
+        final UserDetails currentUser = userService.getCurrentUser();
+        final Set<Role> roles = userService.mapToRoles(currentUser.getAuthorities());
+        if (!roles.contains(Role.ADMIN)) {
+            if (!task.getExecutor().getMail().equals(currentUser.getUsername())) {
+                throw new AccessDeniedException("You can`t update this task");
+            }
+
+            updateDto.setDescription(null);
+            updateDto.setExecutorId(0L);
+            updateDto.setPriority(null);
+            updateDto.setTitle(null);
+        }
     }
 
     public void delete(Long id) {

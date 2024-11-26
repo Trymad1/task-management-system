@@ -5,8 +5,11 @@ import java.time.LocalDateTime;
 public record TaskDTO(
         Long id,
         Long authorId,
+        String authorName,
         Long executorId,
-        String title, String description, 
+        String executorName,
+        String title, 
+        String description, 
         String status,
         String priority,
         LocalDateTime createdAt,

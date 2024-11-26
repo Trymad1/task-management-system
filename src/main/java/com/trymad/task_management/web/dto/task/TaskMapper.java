@@ -14,12 +14,14 @@ import com.trymad.task_management.model.Task;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface TaskMapper {
 
-    @Mapping(target = "status", source = "status.value")
-    @Mapping(target = "priority", source = "priority.value")
+    @Mapping(target = "status", source = "status.name")
+    @Mapping(target = "priority", source = "priority.name")
     @Mapping(target = "authorId", source = "author.id")
     @Mapping(target = "executorId", source = "executor.id")
     @Mapping(target = "createdAt", source = "createdAt")
     @Mapping(target = "updatedAt", source = "updatedAt")
+    @Mapping(target = "executorName", source = "executor.name")
+    @Mapping(target = "authorName", source = "author.name")
     TaskDTO toDto(Task task);
 
     List<TaskDTO> toDto(Slice<Task> taskDtos);
