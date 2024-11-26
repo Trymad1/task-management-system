@@ -35,3 +35,4 @@ build/
 docker-compose-dev.yml
 src/main/resources/application-dev.yml
 data.sql
+src/main/resources/META-INF/

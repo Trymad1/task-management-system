@@ -24,12 +24,19 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-        private final String NOT_FOUND_ID = "{0} with id {1} not found";
+    private final String NOT_FOUND_ID = "{0} with id {1} not found";
+    private final String NOT_FOUND_MAIL = "{0} with mail {1} not found";
 
     @Transactional(readOnly = true)
     public User get(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(MessageFormat.format(NOT_FOUND_ID, "User", id)));
+    }
+
+    public User get(String mail) {
+        return userRepository.findByMail(mail).orElseThrow(
+            () -> new EntityNotFoundException(MessageFormat.format(NOT_FOUND_MAIL, "User", mail))
+        );
     }
 
     public User getExistsReference(Long id) {

@@ -8,3 +8,6 @@ spring:
       ddl-auto: update;
 server:
   port: ${APP_PORT}
+jwt:
+  expiration: ${JWT_EXPIRATION_MILLI}
+  secret: ${JWT_SECRET}
