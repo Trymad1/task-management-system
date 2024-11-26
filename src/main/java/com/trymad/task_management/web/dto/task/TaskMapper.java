@@ -14,8 +14,8 @@ import com.trymad.task_management.model.Task;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface TaskMapper {
 
-    @Mapping(target = "status", source = "status.value")
-    @Mapping(target = "priority", source = "priority.value")
+    @Mapping(target = "status", source = "status.name")
+    @Mapping(target = "priority", source = "priority.name")
     @Mapping(target = "authorId", source = "author.id")
     @Mapping(target = "executorId", source = "executor.id")
     @Mapping(target = "createdAt", source = "createdAt")

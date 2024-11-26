@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -36,6 +37,7 @@ public class User {
 
     private String name;
 
+    @Column(name = "mail", unique = true)
     private String mail;
 
     private String password;
@@ -51,15 +53,11 @@ public class User {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Task> taskAsAuthor = new ArrayList<>();
 
-    @OneToMany(mappedBy="executor",fetch=FetchType.LAZY, cascade=
-    { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+    @OneToMany(mappedBy = "executor", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.REFRESH })
     private List<Task> taskAsExecutor = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles = new HashSet<>();
 }

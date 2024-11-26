@@ -22,5 +22,5 @@ public class TaskPriorityEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private TaskPriority value;
+    private TaskPriority name;
 }
