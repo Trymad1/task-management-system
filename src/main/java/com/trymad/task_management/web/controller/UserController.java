@@ -32,6 +32,7 @@ public class UserController {
     private final UserMapper userMapper;
 
     @GetMapping
+    @ResponseStatus(value = HttpStatus.OK)
     public List<UserDTO> getAll() {
         return userMapper.toDto(userService.getAll());
     }
@@ -51,6 +52,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("{id}/grantAdmin")
+    @ResponseStatus(value = HttpStatus.OK)
     public UserDTO grantAdminRole(@PathVariable Long id) {
         return userMapper.toDto(userService.grantAdminRole(id));
     }
