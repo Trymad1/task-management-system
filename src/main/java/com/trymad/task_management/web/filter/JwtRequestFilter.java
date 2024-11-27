@@ -1,15 +1,17 @@
 package com.trymad.task_management.web.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.trymad.task_management.exception.JwtExceptionResponseWriter;
 import com.trymad.task_management.security.AuthenticationService;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,29 +20,38 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
+@Slf4j
 
 @Component
-
-@Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final AuthenticationService authService;
+    private final JwtExceptionResponseWriter exceptionWriter;
+
+    private static final List<String> NOT_REQUIRED_TOKEN = Arrays.asList(
+            "/auth/login", "/auth/registy");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        final String pathRequest = request.getRequestURI();
+        final boolean OPEN_ENDPOINT = NOT_REQUIRED_TOKEN.contains(pathRequest);
+        if (!OPEN_ENDPOINT && authHeader != null && authHeader.startsWith("Bearer ")) {
             try {
                 authService.authenticate(authHeader.substring(7));
             } catch (ExpiredJwtException e) {
-                log.info("Token expired");
-            } catch (SignatureException e) {
-                log.info("Invalid token signature");
+                exceptionWriter.expiredToken(request, response);
             } catch (JwtException e) {
-                log.info("Incaused jwt exception");
+                exceptionWriter.invalidToken(request, response);
+            } catch (Exception e) {
+
             }
+        }
+
+        if (!OPEN_ENDPOINT && authHeader == null) {
+            exceptionWriter.requiredToken(request, response);
         }
 
         filterChain.doFilter(request, response);

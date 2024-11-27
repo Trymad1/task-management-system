@@ -23,7 +23,7 @@ public class AuthenticationController {
     private final AuthenticationService authService;
 
     @PostMapping("login")
-    public JwtResponse createTokenByCredentionals(@RequestBody LoginDTO loginDTO) {
+    public JwtResponse createTokenByCredentionals(@RequestBody @Valid LoginDTO loginDTO) {
         return new JwtResponse(authService.createJwtToken(loginDTO));
     }
 
