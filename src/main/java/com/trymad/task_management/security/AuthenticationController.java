@@ -11,6 +11,7 @@ import com.trymad.task_management.security.jwt.JwtResponse;
 import com.trymad.task_management.security.jwt.LoginDTO;
 import com.trymad.task_management.web.dto.user.UserCreateDTO;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("registry")
-    public JwtResponse registy(@RequestBody UserCreateDTO userCreateDTO) {
+    public JwtResponse registy(@RequestBody @Valid UserCreateDTO userCreateDTO) {
         return new JwtResponse(authService.registryUser(userCreateDTO));
     }
 
