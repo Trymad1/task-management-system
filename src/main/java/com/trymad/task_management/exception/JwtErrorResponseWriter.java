@@ -9,14 +9,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 
 @Component
-public class JwtExceptionResponseWriter {
+public class JwtErrorResponseWriter extends AbstractJsonErrorResponseWriter {
 
-    private final ObjectMapper mapper;
+    public JwtErrorResponseWriter(ObjectMapper mapper) {
+        super(mapper);
+    }
 
     public HttpServletResponse expiredToken(HttpServletRequest request, HttpServletResponse response) {
         final HttpStatus status = HttpStatus.UNAUTHORIZED;
@@ -49,19 +48,6 @@ public class JwtExceptionResponseWriter {
 
         final ErrorResponse errorResponse = new ErrorResponse(status.value(), message, path, method, timestamp);
         return writeInResponse(response, errorResponse);
-    }
-
-    private HttpServletResponse writeInResponse(HttpServletResponse httpResponse, ErrorResponse responseJson) {
-        httpResponse.setContentType("application/json");
-        httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-        try {
-            httpResponse.getWriter().write(mapper.writeValueAsString(responseJson));
-        } catch (Exception e) {
-            httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            throw new RuntimeException("Unexpected exception while writing in exception response");
-        }
-
-        return httpResponse;
     }
 
 }

@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.trymad.task_management.exception.JwtExceptionResponseWriter;
+import com.trymad.task_management.exception.JwtErrorResponseWriter;
 import com.trymad.task_management.security.AuthenticationService;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -26,10 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final AuthenticationService authService;
-    private final JwtExceptionResponseWriter exceptionWriter;
+    private final JwtErrorResponseWriter exceptionWriter;
 
-    private static final List<String> NOT_REQUIRED_TOKEN = Arrays.asList(
-            "/auth/login", "/auth/registy");
+    private static final List<String> NOT_REQUIRED_TOKEN = Arrays.asList("/auth/login", "/auth/registry");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -38,15 +37,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String pathRequest = request.getRequestURI();
         final boolean OPEN_ENDPOINT = NOT_REQUIRED_TOKEN.contains(pathRequest);
-        if (!OPEN_ENDPOINT && authHeader != null && authHeader.startsWith("Bearer ")) {
+        
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
             try {
                 authService.authenticate(authHeader.substring(7));
             } catch (ExpiredJwtException e) {
-                exceptionWriter.expiredToken(request, response);
+                if (!OPEN_ENDPOINT)
+                    exceptionWriter.expiredToken(request, response);
             } catch (JwtException e) {
-                exceptionWriter.invalidToken(request, response);
+                if (!OPEN_ENDPOINT)
+                    exceptionWriter.invalidToken(request, response);
             } catch (Exception e) {
-
+                if (!OPEN_ENDPOINT)
+                    exceptionWriter.invalidToken(request, response);
             }
         }
 

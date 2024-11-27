@@ -49,10 +49,6 @@ public class AuthenticationService {
     }
 
     public String registryUser(UserCreateDTO userCreateDTO) {
-        if (userService.existsByMail(userCreateDTO.mail())) {
-            throw new UserAlreadyExistsException(userCreateDTO.mail());
-        }
-
         final User user = userService.create(userCreateDTO, Role.USER);
         return jwtTokenProvider.generateToken(userService.toUserDetails(user));
     }

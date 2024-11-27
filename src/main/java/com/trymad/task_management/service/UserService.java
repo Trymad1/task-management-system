@@ -24,6 +24,7 @@ import com.trymad.task_management.model.Role;
 import com.trymad.task_management.model.RoleEntity;
 import com.trymad.task_management.model.User;
 import com.trymad.task_management.repository.UserRepository;
+import com.trymad.task_management.security.UserAlreadyExistsException;
 import com.trymad.task_management.web.dto.user.UserCreateDTO;
 import com.trymad.task_management.web.dto.user.UserMapper;
 import com.trymad.task_management.web.dto.user.UserUpdateDTO;
@@ -75,6 +76,10 @@ public class UserService implements UserDetailsService {
         final User user = userMapper.toEntity(userCreateDTO);
         final LocalDateTime now = LocalDateTime.now();
 
+        if (this.existsByMail(user.getMail())) {
+            throw new UserAlreadyExistsException(user.getMail());
+        }
+
         user.setPassword(passwordEncoder.encode(userCreateDTO.password()));
         user.setCreated_at(now);
         user.setUpdated_at(now);
@@ -85,7 +90,7 @@ public class UserService implements UserDetailsService {
 
     public User update(UserUpdateDTO userUpdateDTO, Long id) throws AccessDeniedException {
         final User user = this.get(id);
-        if(!this.getCurrentUser().getUsername().equals(user.getMail())) {
+        if (!this.getCurrentUser().getUsername().equals(user.getMail())) {
             throw new AccessDeniedException("You can`t change another users");
         }
 
@@ -111,7 +116,7 @@ public class UserService implements UserDetailsService {
     public User grantAdminRole(Long userId) {
         final User user = this.get(userId);
         user.getRoles().add(roleService.get(Role.ADMIN));
-        
+
         return user;
     }
 
@@ -122,12 +127,14 @@ public class UserService implements UserDetailsService {
 
     private UserDetails createUserDetails(
             String mail, String password, Set<Role> roles) {
-        final Set<GrantedAuthority> authorities = roles.stream().map(role -> new SimpleGrantedAuthority(role.toString())).collect(Collectors.toSet());
+        final Set<GrantedAuthority> authorities = roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.toString())).collect(Collectors.toSet());
         return createUserDetails(mail, password, authorities);
     }
 
-    private UserDetails createUserDetails(String mail, String password, Collection<? extends GrantedAuthority> authority) {
-        return new org.springframework.security.core.userdetails.User(mail ,password, authority); 
+    private UserDetails createUserDetails(String mail, String password,
+            Collection<? extends GrantedAuthority> authority) {
+        return new org.springframework.security.core.userdetails.User(mail, password, authority);
     }
 
     public UserDetails getCurrentUser() {
