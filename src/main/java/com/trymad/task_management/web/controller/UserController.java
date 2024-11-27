@@ -19,6 +19,7 @@ import com.trymad.task_management.web.dto.user.UserDTO;
 import com.trymad.task_management.web.dto.user.UserMapper;
 import com.trymad.task_management.web.dto.user.UserUpdateDTO;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -44,7 +45,7 @@ public class UserController {
     @PutMapping("{id}")
     @ResponseStatus(value = HttpStatus.OK)
     public UserDTO update(@PathVariable Long id,
-            @RequestBody UserUpdateDTO userUpdateDTO) throws AccessDeniedException {
+            @RequestBody @Valid UserUpdateDTO userUpdateDTO) throws AccessDeniedException {
         return userMapper.toDto(userService.update(userUpdateDTO, id));
     }
 

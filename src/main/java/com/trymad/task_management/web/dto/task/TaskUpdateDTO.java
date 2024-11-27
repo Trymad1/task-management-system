@@ -3,7 +3,10 @@ package com.trymad.task_management.web.dto.task;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonMerge;
+import com.trymad.task_management.web.validation.TaskPriorityCheck;
+import com.trymad.task_management.web.validation.TaskStatusCheck;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,15 +27,19 @@ public class TaskUpdateDTO {
     Long executorId = 0L;
 
     @JsonMerge
+    @Size(max = 40, message = "maximum title length is 24")
     String title;
 
     @JsonMerge
+    @Size(max = 40, message = "maximum description length is 255")
     String description;
 
     @JsonMerge
+    @TaskStatusCheck(allowNull = true)
     String status;
 
     @JsonMerge
+    @TaskPriorityCheck(allowNull = true)
     String priority;
 
     @JsonAnySetter

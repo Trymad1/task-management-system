@@ -28,6 +28,7 @@ import com.trymad.task_management.web.dto.task.TaskMapper;
 import com.trymad.task_management.web.dto.task.TaskParams;
 import com.trymad.task_management.web.dto.task.TaskUpdateDTO;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -62,7 +63,7 @@ public class TaskController {
 
     @PostMapping("{id}/comments")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public CommentDTO addCommentsToTask(@RequestBody CommentCreateDTO commentCreateDTO, @PathVariable Long id)
+    public CommentDTO addCommentsToTask(@Valid @RequestBody CommentCreateDTO commentCreateDTO, @PathVariable Long id)
             throws AccessDeniedException {
         return commentMapper.toDto(commentService.addComment(commentCreateDTO, id));
     }
@@ -70,13 +71,13 @@ public class TaskController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public TaskDTO create(@RequestBody TaskCreateDTO createDTO) {
+    public TaskDTO create(@Valid @RequestBody TaskCreateDTO createDTO) {
         return taskMapper.toDto(taskService.create(createDTO));
     }
 
     @PatchMapping("{id}")
     @ResponseStatus(value = HttpStatus.OK)
-    public TaskDTO update(@RequestBody TaskUpdateDTO updateDTO, @PathVariable Long id) throws AccessDeniedException {
+    public TaskDTO update(@RequestBody @Valid TaskUpdateDTO updateDTO, @PathVariable Long id) throws AccessDeniedException {
         return taskMapper.toDto(taskService.update(updateDTO, id));
     }
 
