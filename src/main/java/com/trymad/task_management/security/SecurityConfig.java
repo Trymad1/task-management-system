@@ -63,7 +63,7 @@ public class SecurityConfig {
                     sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
                 .exceptionHandling(exception -> {
-                exception.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.FORBIDDEN));
+                    exception.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
                 })
                 .addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

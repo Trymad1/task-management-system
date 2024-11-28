@@ -1,53 +1,36 @@
 package com.trymad.task_management.exception;
 
-import java.time.Instant;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtErrorResponseWriter extends AbstractJsonErrorResponseWriter {
 
-    public JwtErrorResponseWriter(ObjectMapper mapper) {
+    private final ErrorResponseSupplyer errorSupplyer;
+
+    public JwtErrorResponseWriter(ObjectMapper mapper, ErrorResponseSupplyer errorSupplyer) {
         super(mapper);
+        this.errorSupplyer = errorSupplyer;
     }
 
-    public HttpServletResponse expiredToken(HttpServletRequest request, HttpServletResponse response) {
+    public HttpServletResponse invalidToken(HttpServletRequest request, HttpServletResponse response, JwtException e) {
         final HttpStatus status = HttpStatus.UNAUTHORIZED;
-        final String path = request.getRequestURI();
-        final String message = "Token expired";
-        final Instant timestamp = Instant.now();
-        final String method = request.getMethod();
+        final String message = e.getMessage();
 
-        final ErrorResponse errorResponse = new ErrorResponse(status.value(), message, path, method, timestamp);
-        return writeInResponse(response, errorResponse);
-    }
-
-    public HttpServletResponse invalidToken(HttpServletRequest request, HttpServletResponse response) {
-        final HttpStatus status = HttpStatus.UNAUTHORIZED;
-        final String path = request.getRequestURI();
-        final String message = "Invalid token signature";
-        final Instant timestamp = Instant.now();
-        final String method = request.getMethod();
-
-        final ErrorResponse errorResponse = new ErrorResponse(status.value(), message, path, method, timestamp);
-        return writeInResponse(response, errorResponse);
+        return writeInResponse(response, errorSupplyer.getResponse(status, request, message).getBody());
     }
 
     public HttpServletResponse requiredToken(HttpServletRequest request, HttpServletResponse response) {
         final HttpStatus status = HttpStatus.UNAUTHORIZED;
-        final String path = request.getRequestURI();
-        final String message = "Unauthorized, bearer token required";
-        final Instant timestamp = Instant.now();
-        final String method = request.getMethod();
+        final String message = "Bearer token required";
 
-        final ErrorResponse errorResponse = new ErrorResponse(status.value(), message, path, method, timestamp);
-        return writeInResponse(response, errorResponse);
+        return writeInResponse(response, errorSupplyer.getResponse(status, request, message).getBody());
     }
 
 }

@@ -1,6 +1,5 @@
 package com.trymad.task_management.exception;
 
-import java.time.Instant;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -16,15 +15,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.trymad.task_management.security.UserAlreadyExistsException;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private final ErrorResponseSupplyer responseSupplyer;
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleEntityNotFound(EntityNotFoundException e, HttpServletRequest request) {
-        return this.buildResponse(HttpStatus.NOT_FOUND, request, e.getMessage());
+        return responseSupplyer.getResponse(HttpStatus.NOT_FOUND, request, e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -34,20 +38,21 @@ public class GlobalExceptionHandler {
         final StringBuilder messageBuilder = new StringBuilder();
         fieldErrors.stream().map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
                 .forEach(errorField -> messageBuilder.append(errorField + " | "));
+        final String message = messageBuilder.substring(0, messageBuilder.length() - 3); // cut | symbol in end, TODO
 
-        return this.buildResponse(HttpStatus.BAD_REQUEST, request, messageBuilder.toString());
+        return responseSupplyer.getResponse(HttpStatus.BAD_REQUEST, request, message);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErrorResponse> handleHttpMethodNotSupproted(HttpRequestMethodNotSupportedException e,
             HttpServletRequest request) {
         final String message = "Path with current method not found";
-        return this.buildResponse(HttpStatus.NOT_FOUND, request, message);
+        return responseSupplyer.getResponse(HttpStatus.NOT_FOUND, request, message);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException e, HttpServletRequest request) {
-        return this.buildResponse(HttpStatus.FORBIDDEN, request, "Access denied");
+        return responseSupplyer.getResponse(HttpStatus.FORBIDDEN, request, "Access denied");
     }
 
     @ExceptionHandler(AuthenticationException.class)
@@ -58,28 +63,26 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> notReadableException(HttpMessageNotReadableException e,
             HttpServletRequest request) {
-        return this.buildResponse(HttpStatus.BAD_REQUEST, request, "Bad json body");
+        return responseSupplyer.getResponse(HttpStatus.BAD_REQUEST, request, "Bad json body");
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleUserAlreadyExists(UserAlreadyExistsException e,
             HttpServletRequest request) {
-        return this.buildResponse(HttpStatus.BAD_REQUEST, request, "User already exists");
+        return responseSupplyer.getResponse(HttpStatus.BAD_REQUEST, request, "User already exists");
     }
 
-    private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, HttpServletRequest request, String message) {
-        final String path = request.getRequestURI();
-        final Instant timestamp = Instant.now();
-        final String method = request.getMethod();
-
-        final ErrorResponse response = new ErrorResponse(status.value(), message, path, method, timestamp);
-        return new ResponseEntity<ErrorResponse>(response, status);
+    // for /refresh endpoint, filter handling exception in JwtErrorResponseWriter.
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExists(JwtException e,
+            HttpServletRequest request) {
+        return responseSupplyer.getResponse(HttpStatus.UNAUTHORIZED, request, e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception e,
             HttpServletRequest request) {
-        return this.buildResponse(HttpStatus.BAD_REQUEST, request, "Unexpected server error");
+        return responseSupplyer.getResponse(HttpStatus.INTERNAL_SERVER_ERROR, request, "Unexpected server error");
     }
 
 }
