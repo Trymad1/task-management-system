@@ -1,4 +1,4 @@
-package com.trymad.task_management.security.jwt;
+package com.trymad.task_management.web.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

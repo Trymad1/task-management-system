@@ -5,9 +5,9 @@ import java.io.IOException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.trymad.task_management.exception.JwtErrorResponseWriter;
-import com.trymad.task_management.security.AuthenticationService;
-import com.trymad.task_management.security.PublicPathStorage;
+import com.trymad.task_management.service.AuthenticationService;
+import com.trymad.task_management.util.JwtErrorResponseWriter;
+import com.trymad.task_management.util.PublicPathStorage;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;

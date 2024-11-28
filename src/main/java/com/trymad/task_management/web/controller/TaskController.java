@@ -2,6 +2,7 @@ package com.trymad.task_management.web.controller;
 
 import java.util.List;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -28,13 +29,19 @@ import com.trymad.task_management.web.dto.task.TaskMapper;
 import com.trymad.task_management.web.dto.task.TaskParams;
 import com.trymad.task_management.web.dto.task.TaskUpdateDTO;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Task controller")
+
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/api/v1/tasks")
 public class TaskController {
 
     private final TaskService taskService;
@@ -45,9 +52,11 @@ public class TaskController {
     @GetMapping
     @ResponseStatus(value = HttpStatus.OK)
     public List<TaskDTO> findByFilters(TaskParams taskParams,
-            @PageableDefault(page = 0, size = 10, sort = "createdAt") Pageable pageable) {
+            @ParameterObject @PageableDefault(page = 0, size = 10, sort = "createdAt") Pageable pageable) {
         return taskMapper.toDto(taskService.get(taskParams, pageable));
     }
+
+    @Operation(summary = "Get task by task id")
 
     @GetMapping("{id}")
     @ResponseStatus(value = HttpStatus.OK)
@@ -55,9 +64,13 @@ public class TaskController {
         return taskMapper.toDto(taskService.get(id));
     }
 
+    @Operation(summary = "Get comments for task by task id"
+
+    )
+
     @GetMapping("{id}/comments")
     @ResponseStatus(value = HttpStatus.OK)
-    public List<CommentDTO> getCommentsForTask(@PathVariable Long id, Pageable pageable) {
+    public List<CommentDTO> getCommentsForTask(@PathVariable Long id, @ParameterObject Pageable pageable) {
         return commentMapper.toDto(commentService.getByTaskId(id, pageable));
     }
 
@@ -77,7 +90,8 @@ public class TaskController {
 
     @PatchMapping("{id}")
     @ResponseStatus(value = HttpStatus.OK)
-    public TaskDTO update(@RequestBody @Valid TaskUpdateDTO updateDTO, @PathVariable Long id) throws AccessDeniedException {
+    public TaskDTO update(@RequestBody @Valid TaskUpdateDTO updateDTO, @PathVariable Long id)
+            throws AccessDeniedException {
         return taskMapper.toDto(taskService.update(updateDTO, id));
     }
 

@@ -1,4 +1,4 @@
-package com.trymad.task_management.security;
+package com.trymad.task_management.exception;
 
 public class UserAlreadyExistsException extends RuntimeException {
     

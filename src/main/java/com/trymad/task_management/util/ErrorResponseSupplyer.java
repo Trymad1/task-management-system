@@ -1,10 +1,12 @@
-package com.trymad.task_management.exception;
+package com.trymad.task_management.util;
 
 import java.time.Instant;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import com.trymad.task_management.exception.ErrorResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 

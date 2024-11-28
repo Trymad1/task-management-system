@@ -19,13 +19,18 @@ import com.trymad.task_management.web.dto.user.UserDTO;
 import com.trymad.task_management.web.dto.user.UserMapper;
 import com.trymad.task_management.web.dto.user.UserUpdateDTO;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "User controller")
+
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     private final UserService userService;

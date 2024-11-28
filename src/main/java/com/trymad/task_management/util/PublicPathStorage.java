@@ -1,4 +1,4 @@
-package com.trymad.task_management.security;
+package com.trymad.task_management.util;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ import jakarta.servlet.http.HttpServletRequest;
 public class PublicPathStorage {
 
     private final List<RequestMatcher> publicPaths = List.of(
-            new AntPathRequestMatcher("/doc/**"),
-            new AntPathRequestMatcher("/auth/**"));
+            new AntPathRequestMatcher("/api/doc/**"),
+            new AntPathRequestMatcher("/api/v1/auth/**"));
 
     public boolean isPublicPath(HttpServletRequest request) {
         return publicPaths.stream().anyMatch(antPublic -> antPublic.matches(request));

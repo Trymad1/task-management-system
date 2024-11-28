@@ -1,4 +1,4 @@
-package com.trymad.task_management.security;
+package com.trymad.task_management.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.trymad.task_management.util.PublicPathStorage;
 import com.trymad.task_management.web.filter.JwtRequestFilter;
 
 import lombok.RequiredArgsConstructor;
