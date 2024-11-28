@@ -30,6 +30,8 @@ import com.trymad.task_management.web.dto.task.TaskParams;
 import com.trymad.task_management.web.dto.task.TaskUpdateDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -49,38 +51,51 @@ public class TaskController {
     private final CommentMapper commentMapper;
     private final CommentService commentService;
 
+    @Parameters({
+        @Parameter(name = "authorId", example = "1"),
+        @Parameter(name = "executorId", example = "2")
+    })
+    @Operation(summary = "Get tasks by filters", description = "Paginate and filter support, return list of tasks")
     @GetMapping
     @ResponseStatus(value = HttpStatus.OK)
-    public List<TaskDTO> findByFilters(TaskParams taskParams,
+    public List<TaskDTO> findByFilters(@ParameterObject TaskParams taskParams,
             @ParameterObject @PageableDefault(page = 0, size = 10, sort = "createdAt") Pageable pageable) {
         return taskMapper.toDto(taskService.get(taskParams, pageable));
     }
 
+    @Parameters({
+            @Parameter(name = "taskId", example = "1")
+    })
     @Operation(summary = "Get task by task id")
-
-    @GetMapping("{id}")
+    @GetMapping("{taskId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public TaskDTO getById(@PathVariable Long id) {
-        return taskMapper.toDto(taskService.get(id));
+    public TaskDTO getById(@PathVariable Long taskId) {
+        return taskMapper.toDto(taskService.get(taskId));
     }
 
-    @Operation(summary = "Get comments for task by task id"
-
-    )
-
-    @GetMapping("{id}/comments")
+    @Parameters({
+            @Parameter(name = "taskId", example = "1")
+    })
+    @Operation(summary = "Get comments for task by task id", description = "Paginate and filter support, return list of comments for task")
+    @GetMapping("{taskId}/comments")
     @ResponseStatus(value = HttpStatus.OK)
-    public List<CommentDTO> getCommentsForTask(@PathVariable Long id, @ParameterObject Pageable pageable) {
-        return commentMapper.toDto(commentService.getByTaskId(id, pageable));
+    public List<CommentDTO> getCommentsForTask(@PathVariable Long taskId, @ParameterObject Pageable pageable) {
+        return commentMapper.toDto(commentService.getByTaskId(taskId, pageable));
     }
 
-    @PostMapping("{id}/comments")
+    @Parameters({
+            @Parameter(name = "taskId", example = "1")
+    })
+    @Operation(summary = "Add comment to task", description = "Only admin or executor task can add new comments to task")
+    @PostMapping("{taskId}/comments")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public CommentDTO addCommentsToTask(@Valid @RequestBody CommentCreateDTO commentCreateDTO, @PathVariable Long id)
-            throws AccessDeniedException {
-        return commentMapper.toDto(commentService.addComment(commentCreateDTO, id));
+    public CommentDTO addCommentsToTask(
+            @Valid @RequestBody CommentCreateDTO commentCreateDTO,
+            @PathVariable Long taskId) throws AccessDeniedException {
+        return commentMapper.toDto(commentService.addComment(commentCreateDTO, taskId));
     }
 
+    @Operation(summary = "Create new task", description = "Only admins can create new task")
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -88,17 +103,26 @@ public class TaskController {
         return taskMapper.toDto(taskService.create(createDTO));
     }
 
-    @PatchMapping("{id}")
+    @Parameters({
+            @Parameter(name = "taskId", example = "1")
+    })
+    @Operation(summary = "Create new task", description = "Only admins can create new task")
+    @PatchMapping("{taskId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public TaskDTO update(@RequestBody @Valid TaskUpdateDTO updateDTO, @PathVariable Long id)
-            throws AccessDeniedException {
-        return taskMapper.toDto(taskService.update(updateDTO, id));
+    public TaskDTO update(
+            @RequestBody @Valid TaskUpdateDTO updateDTO,
+            @PathVariable Long taskId) throws AccessDeniedException {
+        return taskMapper.toDto(taskService.update(updateDTO, taskId));
     }
 
+    @Parameters({
+            @Parameter(name = "taskId", example = "1")
+    })
+    @Operation(summary = "Delete task by id", description = "Only admins can delete the tasks")
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("{id}")
+    @DeleteMapping("{taskId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public void delete(@PathVariable Long id) {
-        taskService.delete(id);
+    public void delete(@PathVariable Long taskId) {
+        taskService.delete(taskId);
     }
 }

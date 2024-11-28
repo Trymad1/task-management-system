@@ -1,11 +1,11 @@
 package com.trymad.task_management.web.dto.task;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonMerge;
 import com.trymad.task_management.web.validation.TaskPriorityCheck;
 import com.trymad.task_management.web.validation.TaskStatusCheck;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
+@Schema(description = "Json body request for update task, support patch update")
 @JsonIgnoreProperties(ignoreUnknown = false)
 public class TaskUpdateDTO {
 
@@ -36,15 +37,12 @@ public class TaskUpdateDTO {
 
     @JsonMerge
     @TaskStatusCheck(allowNull = true)
+    @Schema(allowableValues = {"NEW", "IN_PROGRESS", "PAUSED", "CANCELED", "COMPLETED"})
     String status;
 
     @JsonMerge
     @TaskPriorityCheck(allowNull = true)
+    @Schema(allowableValues = {"CRITICAL", "HIGH", "MEDIUM", "LOW", "TRIVIAL"})
     String priority;
-
-    @JsonAnySetter
-    public void handleUnknown(String name, Object value) {
-        throw new IllegalArgumentException("Invalid request field: " + name);
-    }
 
 }
