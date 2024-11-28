@@ -12,8 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class PublicPathStorage {
 
     private final List<RequestMatcher> publicPaths = List.of(
-            new AntPathRequestMatcher("/swagger-ui/**"),
-            new AntPathRequestMatcher("/v3/api-docs*/**"),
+            new AntPathRequestMatcher("/doc/**"),
             new AntPathRequestMatcher("/auth/**"));
 
     public boolean isPublicPath(HttpServletRequest request) {
