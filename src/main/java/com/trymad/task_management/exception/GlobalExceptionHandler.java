@@ -81,8 +81,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception e,
-            HttpServletRequest request) {
-        return responseSupplyer.getResponse(HttpStatus.INTERNAL_SERVER_ERROR, request, "Unexpected server error");
+            HttpServletRequest request) throws Exception {
+        if (e instanceof Exception)
+            throw e;
+        return responseSupplyer.getResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                request, "Unexpected server error");
     }
 
 }

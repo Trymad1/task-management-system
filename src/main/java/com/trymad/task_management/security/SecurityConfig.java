@@ -51,13 +51,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http, JwtRequestFilter requestFilter) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http, JwtRequestFilter requestFilter, PublicPathStorage publicPaths)
+            throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests((httpRequest -> {
-                    httpRequest.requestMatchers("/auth/**").permitAll()
-                            .anyRequest().authenticated();
+                    httpRequest.requestMatchers(publicPaths.getPathsAsArray()).permitAll();
+                    httpRequest.anyRequest().authenticated();
+
                 }))
                 .sessionManagement(sessionManagement -> {
                     sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
