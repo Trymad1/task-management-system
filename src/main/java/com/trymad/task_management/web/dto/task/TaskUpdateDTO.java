@@ -25,14 +25,17 @@ public class TaskUpdateDTO {
     // If executorId in request is not not specified, set to 0 id
     // this is necessary so that the value can be set to null
     // in service if this field equals 0, it dont change entity
+    @Schema(example = "2")
     Long executorId = 0L;
 
     @JsonMerge
-    @Size(max = 40, message = "maximum title length is 24")
+    @Size(max = 24, message = "maximum title length is 24")
+    @Schema(example = "Some title")
     String title;
 
     @JsonMerge
-    @Size(max = 40, message = "maximum description length is 255")
+    @Size(max = 255, message = "maximum description length is 255")
+    @Schema(example = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.")
     String description;
 
     @JsonMerge

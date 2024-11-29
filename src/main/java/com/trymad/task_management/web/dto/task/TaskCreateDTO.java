@@ -9,14 +9,17 @@ import jakarta.validation.constraints.Size;
 
 public record TaskCreateDTO(
         
+        @Schema(example = "2")
         Long executorId,
 
         @NotBlank(message = "title must be not blank")
-        @Size(max = 40, message = "maximum title length is 24")
+        @Size(max = 24, message = "maximum title length is 24")
+        @Schema(example = "Some title")
         String title,
 
         @NotBlank(message = "description must be not blank")
-        @Size(max = 40, message = "maximum title length is 255")
+        @Size(max = 255, message = "maximum title length is 255")
+        @Schema(example = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.")
         String description,
 
         @TaskStatusCheck

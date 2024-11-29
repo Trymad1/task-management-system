@@ -1,7 +1,5 @@
 package com.trymad.task_management.model;
 
-import java.util.Arrays;
-
 public enum TaskStatus {
     NEW("NEW"),
     IN_PROGRESS("IN_PROGRESS"),

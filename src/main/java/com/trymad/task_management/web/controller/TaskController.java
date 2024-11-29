@@ -52,8 +52,8 @@ public class TaskController {
     private final CommentService commentService;
 
     @Parameters({
-        @Parameter(name = "authorId", example = "1"),
-        @Parameter(name = "executorId", example = "2")
+            @Parameter(name = "authorId", example = "1"),
+            @Parameter(name = "executorId", example = "2")
     })
     @Operation(summary = "Get tasks by filters", description = "Paginate and filter support, return list of tasks")
     @GetMapping
@@ -86,7 +86,7 @@ public class TaskController {
     @Parameters({
             @Parameter(name = "taskId", example = "1")
     })
-    @Operation(summary = "Add comment to task", description = "Only admin or executor task can add new comments to task")
+    @Operation(summary = "Add comment to task", description = "Only admin or executor task can add new comments to task. The task author is taken from the currently authenticated user")
     @PostMapping("{taskId}/comments")
     @ResponseStatus(value = HttpStatus.CREATED)
     public CommentDTO addCommentsToTask(
@@ -106,7 +106,8 @@ public class TaskController {
     @Parameters({
             @Parameter(name = "taskId", example = "1")
     })
-    @Operation(summary = "Create new task", description = "Only admins can create new task")
+    @Operation(summary = "Create new task", 
+    description = "Only admins and task executor can change task. Admin can change all field, executor only status")
     @PatchMapping("{taskId}")
     @ResponseStatus(value = HttpStatus.OK)
     public TaskDTO update(
@@ -119,7 +120,7 @@ public class TaskController {
             @Parameter(name = "taskId", example = "1")
     })
     @Operation(summary = "Delete task by id", description = "Only admins can delete the tasks")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("{taskId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void delete(@PathVariable Long taskId) {
