@@ -20,11 +20,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.trymad.task_management.exception.UserAlreadyExistsException;
 import com.trymad.task_management.model.Role;
 import com.trymad.task_management.model.RoleEntity;
 import com.trymad.task_management.model.User;
 import com.trymad.task_management.repository.UserRepository;
-import com.trymad.task_management.security.UserAlreadyExistsException;
 import com.trymad.task_management.web.dto.user.UserCreateDTO;
 import com.trymad.task_management.web.dto.user.UserMapper;
 import com.trymad.task_management.web.dto.user.UserUpdateDTO;

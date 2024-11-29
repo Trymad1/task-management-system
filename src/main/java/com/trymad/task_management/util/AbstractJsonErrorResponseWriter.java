@@ -1,9 +1,10 @@
-package com.trymad.task_management.exception;
+package com.trymad.task_management.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trymad.task_management.exception.ErrorResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

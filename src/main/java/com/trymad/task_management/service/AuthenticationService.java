@@ -1,4 +1,4 @@
-package com.trymad.task_management.security;
+package com.trymad.task_management.service;
 
 import java.util.stream.Collectors;
 
@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.trymad.task_management.model.Role;
 import com.trymad.task_management.model.User;
-import com.trymad.task_management.security.jwt.JwtTokenProvider;
-import com.trymad.task_management.security.jwt.LoginDTO;
-import com.trymad.task_management.service.UserService;
+import com.trymad.task_management.web.dto.user.LoginDTO;
 import com.trymad.task_management.web.dto.user.UserCreateDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -35,8 +33,6 @@ public class AuthenticationService {
         return jwtTokenProvider.generateToken(userDetails);
     }
 
-    // this method valid token by method getMail and getRoles, and set auth in
-    // context.
     public Authentication authenticate(String token) {
         final Authentication authentication = new UsernamePasswordAuthenticationToken(
                 jwtTokenProvider.getMail(token),

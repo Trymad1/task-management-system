@@ -1,4 +1,4 @@
-package com.trymad.task_management.exception;
+package com.trymad.task_management.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.trymad.task_management.security;
+package com.trymad.task_management.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.trymad.task_management.util.PublicPathStorage;
 import com.trymad.task_management.web.filter.JwtRequestFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -51,13 +52,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http, JwtRequestFilter requestFilter) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http, JwtRequestFilter requestFilter, PublicPathStorage publicPaths)
+            throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests((httpRequest -> {
-                    httpRequest.requestMatchers("/auth/**").permitAll()
-                            .anyRequest().authenticated();
+                    httpRequest.requestMatchers(publicPaths.getPathsAsArray()).permitAll();
+                    httpRequest.anyRequest().authenticated();
+
                 }))
                 .sessionManagement(sessionManagement -> {
                     sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

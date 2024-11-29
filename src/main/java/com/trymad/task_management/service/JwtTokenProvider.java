@@ -1,4 +1,4 @@
-package com.trymad.task_management.security.jwt;
+package com.trymad.task_management.service;
 
 import java.time.Duration;
 import java.util.Base64;

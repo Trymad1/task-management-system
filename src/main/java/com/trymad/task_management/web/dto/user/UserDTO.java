@@ -4,14 +4,20 @@ import java.util.Set;
 
 import com.trymad.task_management.model.Role;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Default json response from server constains user")
 public record UserDTO(
 
-    Long id, 
-    
-    String name, 
+        @Schema(example = "1") 
+        Long id,
 
-    String mail,
+        @Schema(example = "Oleg") 
+        String name,
 
-    Set<Role> roles) {
-    
+        @Schema(example = "Oleg@gmail.com") 
+        String mail,
+
+        @Schema(example = "[\"ADMIN\", \"USER\"]")
+        Set<Role> roles) {
 }

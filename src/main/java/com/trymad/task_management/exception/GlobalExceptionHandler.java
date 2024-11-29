@@ -12,8 +12,9 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import com.trymad.task_management.security.UserAlreadyExistsException;
+import com.trymad.task_management.util.ErrorResponseSupplyer;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.persistence.EntityNotFoundException;
@@ -79,10 +80,21 @@ public class GlobalExceptionHandler {
         return responseSupplyer.getResponse(HttpStatus.UNAUTHORIZED, request, e.getMessage());
     }
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e,
+            HttpServletRequest request) {
+        final String message = "Excepted " + e.getRequiredType().getSimpleName() + " type in param "
+                + e.getParameter().getParameterName();
+        return responseSupplyer.getResponse(HttpStatus.BAD_REQUEST, request, message);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception e,
-            HttpServletRequest request) {
-        return responseSupplyer.getResponse(HttpStatus.INTERNAL_SERVER_ERROR, request, "Unexpected server error");
+            HttpServletRequest request) throws Exception {
+        if (e instanceof Exception)
+            throw e;
+        return responseSupplyer.getResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                request, "Unexpected server error");
     }
 
 }
