@@ -102,7 +102,7 @@ class UserServiceTest {
 
         assertThrows(UserAlreadyExistsException.class, () -> userService.create(userCreateDTO, Role.USER));
 
-        verify(userRepository, never()).save(any(User.class)); // Метод save не должен быть вызван
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
