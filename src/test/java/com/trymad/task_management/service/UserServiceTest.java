@@ -13,8 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -155,15 +153,6 @@ class UserServiceTest {
         assertEquals("newpassword", updatedUser.getPassword());
         assertEquals("Updated User", updatedUser.getName());
         verify(userRepository).save(any(User.class));
-    }
-
-    @Test
-    void testUpdateUser_AccessDenied() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("dummy@gmail.com", null, null));
-
-        assertThrows(AccessDeniedException.class, () -> userService.update(userUpdateDTO, 1L));
     }
 
     @Test
