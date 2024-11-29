@@ -1,5 +1,6 @@
 package com.trymad.task_management.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,13 +15,14 @@ import lombok.Setter;
 @Setter
 
 @Entity
-@Table(name = "priorities")
-public class TaskPriorityEntity {
+@Table(name = "roles")
+public class RoleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private TaskPriority name;
+    @Column(name = "name")
+    private Role name;
 }

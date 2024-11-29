@@ -9,6 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -19,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.trymad.task_management.model.Role;
 import com.trymad.task_management.model.User;
 import com.trymad.task_management.repository.UserRepository;
 import com.trymad.task_management.service.UserService;
@@ -85,7 +87,7 @@ public class UserServiceTest {
         when(userMapper.toEntity(userCreateDTO)).thenReturn(user);
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        User result = userService.create(userCreateDTO);
+        User result = userService.create(userCreateDTO, Role.USER);
 
         assertNotNull(result);
         assertEquals("Oleg", result.getName());
@@ -97,7 +99,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void givenUserUpdateDtoShouldUpdateAndReturnUpdatedUser() {
+    public void givenUserUpdateDtoShouldUpdateAndReturnUpdatedUser() throws AccessDeniedException {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(user)).thenReturn(user);
 

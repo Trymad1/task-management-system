@@ -5,6 +5,19 @@ spring:
     password: ${DATASOURCE_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update;
+      ddl-auto: none
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 20
 server:
-  port: ${APP_PORT}
+  port: ${APP_PORT:8080}
+jwt:
+  expiration: ${JWT_EXPIRATION_SECOND:60M}
+  secret: ${JWT_SECRET:secret}
+springdoc:
+  swagger-ui:
+    path: /api/doc/swagger-ui.html
+  api-docs:
+    path: /api/doc/v3/api-docs
+  default-produces-media-type: application/json

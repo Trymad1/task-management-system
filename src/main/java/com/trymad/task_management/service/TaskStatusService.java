@@ -23,7 +23,7 @@ public class TaskStatusService {
 
     @Transactional(readOnly = true)
     public TaskStatusEntity get(TaskStatus status) {
-        return statusRepository.findByValue(status).orElseThrow(
+        return statusRepository.findByName(status).orElseThrow(
                 () -> new EntityNotFoundException(MessageFormat.format(NOT_VALID_VALUE, "Status", status)));
     }
 }

@@ -9,6 +9,6 @@ import com.trymad.task_management.model.TaskStatusEntity;
 
 public interface StatusRepository extends JpaRepository<TaskStatusEntity, Long> {
     
-    Optional<TaskStatusEntity> findByValue(TaskStatus status);
+    Optional<TaskStatusEntity> findByName(TaskStatus status);
 
 }
