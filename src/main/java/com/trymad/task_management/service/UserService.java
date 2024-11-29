@@ -90,8 +90,12 @@ public class UserService implements UserDetailsService {
 
     public User update(UserUpdateDTO userUpdateDTO, Long id) throws AccessDeniedException {
         final User user = this.get(id);
-        if (!this.getCurrentUser().getUsername().equals(user.getMail())) {
+        final String currentUserMail = this.getCurrentUser().getUsername();
+        if (!currentUserMail.equals(user.getMail())) {
             throw new AccessDeniedException("You can`t change another users");
+        }
+        if(!userUpdateDTO.mail().equals(currentUserMail) && this.existsByMail(userUpdateDTO.mail())) {
+            throw new UserAlreadyExistsException("User with mail " + userUpdateDTO.mail() + " already exists");
         }
 
         user.setPassword(userUpdateDTO.password());

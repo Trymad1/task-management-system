@@ -11,6 +11,7 @@ services:
     ports:
       - "${DB_PORT:-5432}:5432"
     volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - db-data:/var/lib/postgresql/data 
 
   app:
@@ -22,7 +23,7 @@ services:
       DATASOURCE_USERNAME: ${DB_USER:-admin}
       DATASOURCE_PASSWORD: ${DB_PASSWORD:-admin}
       APP_PORT: ${APP_PORT:-8080}
-      APP_PROFILE: ${APP_PROFILE:-prod}
+      APP_PROFILE: prod
     ports:
       - "${APP_PORT:-8080}:8080"
     depends_on:
