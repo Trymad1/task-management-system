@@ -1,5 +1,6 @@
 # Swagger doc on endpoint /api/doc/swagger-ui/index.html#/
-![image](https://github.com/user-attachments/assets/80bc4ffc-66e9-4d34-b3b1-04fc792c3a0e)
+![image](https://github.com/user-attachments/assets/75e838fe-7023-4fe8-9ecf-2d00bd6e4f70)
+
 
 ## Deployment
 
