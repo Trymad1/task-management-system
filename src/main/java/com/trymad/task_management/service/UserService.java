@@ -121,7 +121,7 @@ public class UserService implements UserDetailsService {
         final User user = this.get(userId);
         user.getRoles().add(roleService.get(Role.ADMIN));
 
-        return user;
+        return userRepository.save(user);
     }
 
     public UserDetails toUserDetails(User user) {
