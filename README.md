@@ -1,6 +1,11 @@
 # Swagger doc on endpoint /api/doc/swagger-ui/index.html#/
 ![image](https://github.com/user-attachments/assets/75e838fe-7023-4fe8-9ecf-2d00bd6e4f70)
 
+To get a user with admin rights, give it to yourself through the appropriate endpoint or log in as the following user:
+
+Oleg@gmail.com
+
+password
 
 ## Deployment
 
@@ -34,3 +39,4 @@ It is important that the init.sql file is in the same directory as the Docker Co
 ```bash
 docker-compose up
 ```
+
