@@ -12,7 +12,7 @@ services:
       - "${DB_PORT:-5432}:5432"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db-data:/var/lib/postgresql/data 
+      - task-manager-volumee-data:/var/lib/postgresql/data 
 
   app:
     build:
@@ -24,6 +24,8 @@ services:
       DATASOURCE_PASSWORD: ${DB_PASSWORD:-admin}
       APP_PORT: ${APP_PORT:-8080}
       APP_PROFILE: prod
+      JWT_EXPIRATION_SECOND: ${JWT_EXPIRATION_SECOND:-1800s}
+      JWT_SECRET: ${JWT_SECRET:-3f5ff51b9ab3f7b6b646eca2ac65b0b920add5673ce892814eeb5a4ebd45db21}
     ports:
       - "${APP_PORT:-8080}:8080"
     depends_on:
@@ -31,4 +33,4 @@ services:
     restart: always  
 
 volumes:
-  db-data:
+  task-manager-volumee-data:
